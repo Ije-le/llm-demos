@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maryland Election Results</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Maryland Election Results</h1>
 
+    <div id="statewide-results">
+        <h2>Statewide Totals</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Candidate</th>
+                    <th>Votes</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody id="statewide-table-body">
+                <!-- Statewide results will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="county-results">
+        <h2>County Results</h2>
+        <label for="county-select">Select a County:</label>
+        <select id="county-select">
+            <option value="">-- Select County --</option>
+            <!-- County options will be dynamically added here -->
+        </select>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Candidate</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody id="county-table-body">
+                <!-- County results will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
