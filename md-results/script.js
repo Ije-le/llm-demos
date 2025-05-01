@@ -28,6 +28,11 @@ Worcester,12431,19632,139,184,342,153,32881`;
     const statewideTableBody = document.getElementById('statewide-table-body');
     const countySelect = document.getElementById('county-select');
     const countyTableBody = document.getElementById('county-table-body');
+    const statewideChartCanvas = document.getElementById('statewide-chart').getContext('2d'); // Get chart context
+    const countyChartCanvas = document.getElementById('county-chart').getContext('2d'); // Get chart context
+
+    let statewideChart = null;
+    let countyChart = null;
 
     // Function to parse CSV data
     function parseCSV(csv) {
@@ -48,6 +53,13 @@ Worcester,12431,19632,139,184,342,153,32881`;
 
     const data = parseCSV(csvData);
 
+    // Function to capitalize the first letter of each word
+    function toTitleCase(str) {
+        return str.toLowerCase().split(' ').map(function (word) {
+            return (word.charAt(0).toUpperCase() + word.slice(1));
+        }).join(' ');
+    }
+
     // Calculate statewide totals
     function calculateStatewideTotals(data) {
         const candidates = ['harris', 'trump', 'oliver', 'stein', 'kennedy', 'others'];
@@ -66,20 +78,93 @@ Worcester,12431,19632,139,184,342,153,32881`;
     const statewideTotals = statewideResults.totals;
     const totalVotes = statewideResults.totalVotes;
 
+    const candidateDisplayNames = {
+        harris: 'Harris',
+        trump: 'Trump',
+        oliver: 'Oliver',
+        stein: 'Stein',
+        kennedy: 'Kennedy',
+        others: 'Others'
+    };
+
     // Display statewide results
     function displayStatewideResults(totals, totalVotes) {
+        statewideTableBody.innerHTML = ''; // Clear existing table rows
+
+        const candidateLabels = [];
+        const candidateVoteCounts = [];
+
         for (const candidate in totals) {
             const votes = totals[candidate];
             const percentage = ((votes / totalVotes) * 100).toFixed(2);
+            const candidateName = candidateDisplayNames[candidate]; // Get formatted name
 
             const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${candidate}</td>
-                <td>${votes}</td>
-                <td>${percentage}%</td>
-            `;
+            row.innerHTML = `<td>${toTitleCase(candidateName)}</td><td>${votes}</td><td>${percentage}%</td>`;
             statewideTableBody.appendChild(row);
+
+            candidateLabels.push(toTitleCase(candidateName));
+            candidateVoteCounts.push(votes);
         }
+        // Destroy existing chart if it exists
+        if (statewideChart) {
+            statewideChart.destroy();
+        }
+        // Create chart
+        statewideChart = new Chart(statewideChartCanvas, {
+            type: 'bar',
+            data: {
+                labels: candidateLabels,
+                datasets: [{
+                    label: 'Votes', // Removed label from dataset
+                    data: candidateVoteCounts,
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.8)',   // Blue with slight transparency
+                        'rgba(255, 99, 132, 0.8)',    // Red with slight transparency
+                        'rgba(255, 206, 86, 0.8)',    // Yellow with slight transparency
+                        'rgba(75, 192, 192, 0.8)',    // Green with slight transparency
+                        'rgba(153, 102, 255, 0.8)',   // Purple with slight transparency
+                        'rgba(255, 159, 64, 0.8)'     // Orange with slight transparency
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',     // Solid blue
+                        'rgba(255, 99, 132, 1)',      // Solid red
+                        'rgba(255, 206, 86, 1)',      // Solid yellow
+                        'rgba(75, 192, 192, 1)',      // Solid green
+                        'rgba(153, 102, 255, 1)',     // Solid purple
+                        'rgba(255, 159, 64, 1)'       // Solid orange
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                layout: {
+                    padding: {
+                        left: 20,
+                        right: 20,
+                        top: 10,
+                        bottom: 10
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false // Hide legend (since we have a title)
+                    },
+                    title: {
+                        display: true,
+                        text: 'Statewide Vote Counts',
+                        font: {
+                            size: 16   // Adjust font size
+                        }
+                    }
+                }
+            }
+        });
     }
 
     displayStatewideResults(statewideTotals, totalVotes);
@@ -111,18 +196,79 @@ Worcester,12431,19632,139,184,342,153,32881`;
         if (!countyData) return;
 
         const candidates = ['harris', 'trump', 'oliver', 'stein', 'kennedy', 'others'];
-        const total = parseInt(countyData.total);
 
-        candidates.forEach(candidate => {
+        const total = parseInt(countyData.total);
+        const candidateLabels = [];
+        const candidatePercentages = [];
+        for (const candidate in candidateDisplayNames) {
             const votes = parseInt(countyData[candidate]);
             const percentage = ((votes / total) * 100).toFixed(2);
 
             const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${candidate}</td>
-                <td>${percentage}%</td>
-            `;
+            row.innerHTML = `<td>${toTitleCase(candidateDisplayNames[candidate])}</td><td>${percentage}%</td>`;
             countyTableBody.appendChild(row);
+
+            candidateLabels.push(toTitleCase(candidateDisplayNames[candidate]));
+            candidatePercentages.push(percentage);
+        }
+        // Destroy existing chart if it exists
+        if (countyChart) {
+            countyChart.destroy();
+        }
+        // Create county chart
+        countyChart = new Chart(countyChartCanvas, {
+            type: 'bar',
+            data: {
+                labels: candidateLabels,
+                datasets: [{
+                    label: 'Percentage', // Removed label from dataset
+                    data: candidatePercentages,
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.8)',   // Blue with slight transparency
+                        'rgba(255, 99, 132, 0.8)',    // Red with slight transparency
+                        'rgba(255, 206, 86, 0.8)',    // Yellow with slight transparency
+                        'rgba(75, 192, 192, 0.8)',    // Green with slight transparency
+                        'rgba(153, 102, 255, 0.8)',   // Purple with slight transparency
+                        'rgba(255, 159, 64, 0.8)'     // Orange with slight transparency
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',     // Solid blue
+                        'rgba(255, 99, 132, 1)',      // Solid red
+                        'rgba(255, 206, 86, 1)',      // Solid yellow
+                        'rgba(75, 192, 192, 1)',      // Solid green
+                        'rgba(153, 102, 255, 1)',     // Solid purple
+                        'rgba(255, 159, 64, 1)'       // Solid orange
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                layout: {
+                    padding: {
+                        left: 20,
+                        right: 20,
+                        top: 10,
+                        bottom: 10
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false  // Hide legend.
+                    },
+                    title: {
+                        display: true,
+                        text: county + ' Vote Percentages',
+                        font: {
+                            size: 16   // Adjust font size
+                        }
+                    }
+                }
+            }
         });
     }
 });

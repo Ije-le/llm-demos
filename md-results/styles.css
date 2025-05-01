@@ -33,4 +33,23 @@ th {
     margin-bottom: 10px;
     padding: 5px;
     font-size: 16px;
+    background-color: #3498db; /* Blue background color */
+    color: white; /* White text color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+#county-select:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+}
+
+/* Style the chart canvas */
+canvas {
+    margin-top: 10px;
+    width: 100%;      /* Restored width to 100% */
+    max-width: none;  /* Removing max-width restraint */
+    height: auto;      /* Maintain aspect ratio based on width */
+    display: block;    /* Remove extra space below the chart */
+    margin: 0 auto;   /* Center the chart horizontally */
 }

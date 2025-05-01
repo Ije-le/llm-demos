@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maryland Election Results</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  <!-- Include Chart.js Library -->
 </head>
 <body>
     <h1>Maryland Election Results</h1>
@@ -23,6 +24,7 @@
                 <!-- Statewide results will be dynamically added here -->
             </tbody>
         </table>
+        <canvas id="statewide-chart" width="400" height="200"></canvas> <!-- Chart canvas -->
     </div>
 
     <div id="county-results">
@@ -44,6 +46,7 @@
                 <!-- County results will be dynamically added here -->
             </tbody>
         </table>
+        <canvas id="county-chart" width="400" height="200"></canvas> <!-- Chart canvas -->
     </div>
 
     <script src="script.js"></script>
